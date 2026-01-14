@@ -1,0 +1,22 @@
+{
+  "node": {
+    "name": "quoter",
+    "displayName": "Quoter",
+    "description": "Interact with Quoter API",
+    "icon": "file:quoter.svg",
+    "group": ["transform"],
+    "version": 1,
+    "defaults": {
+      "name": "Quoter"
+    },
+    "inputs": ["main"],
+    "outputs": ["main"],
+    "credentials": [
+      {
+        "name": "quoterApi",
+        "required": true
+      }
+    ],
+    "properties": []
+  }
+}
