@@ -14,6 +14,6 @@
     "declaration": true,
     "declarationMap": true
   },
-  "include": ["nodes/**/*", "credentials/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["nodes/**/*", "credentials/**/*", "index.ts"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

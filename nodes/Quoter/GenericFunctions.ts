@@ -68,7 +68,7 @@ async function getAccessToken(
   // Get new access token
   const tokenResponse = await this.helpers.request.call(this, {
     url: `${baseUrl}/auth/oauth/authorize`,
-    method: 'POST',
+    method: 'POST' as any,
     body: {
       client_id: credentials.clientId,
       client_secret: credentials.clientSecret,
@@ -132,7 +132,7 @@ export async function quoterApiRequest(
   try {
     const response = await this.helpers.request.call(this, {
       url: url.toString(),
-      method,
+      method: method as any,
       headers,
       body: body ? JSON.stringify(body) : undefined,
       resolveWithFullResponse: false,
@@ -151,7 +151,8 @@ export async function quoterApiRequest(
     // Handle 401 - token might be expired, try refreshing
     if (error.statusCode === 401 && retryCount === 0) {
       // Force token refresh by clearing stored token
-      delete (credentials as IDataObject).access_token;
+      const creds = (await this.getCredentials('quoterApi')) as IDataObject;
+      delete creds.access_token;
       return quoterApiRequest.call(this, method, endpoint, body, query, retryCount + 1);
     }
 

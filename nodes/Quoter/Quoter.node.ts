@@ -99,49 +99,49 @@ export class Quoter implements INodeType {
 
         switch (resource) {
           case 'category':
-            responseData = await this.executeCategoryOperation.call(this, operation, i);
+            responseData = await executeCategoryOperation.call(this, operation, i);
             break;
           case 'contact':
-            responseData = await this.executeContactOperation.call(this, operation, i);
+            responseData = await executeContactOperation.call(this, operation, i);
             break;
           case 'dataFeedSupplier':
-            responseData = await this.executeDataFeedSupplierOperation.call(this, operation, i);
+            responseData = await executeDataFeedSupplierOperation.call(this, operation, i);
             break;
           case 'dataFeedSupplierItem':
-            responseData = await this.executeDataFeedSupplierItemOperation.call(this, operation, i);
+            responseData = await executeDataFeedSupplierItemOperation.call(this, operation, i);
             break;
           case 'item':
-            responseData = await this.executeItemOperation.call(this, operation, i);
+            responseData = await executeItemOperation.call(this, operation, i);
             break;
           case 'itemGroup':
-            responseData = await this.executeItemGroupOperation.call(this, operation, i);
+            responseData = await executeItemGroupOperation.call(this, operation, i);
             break;
           case 'itemGroupItemAssignment':
-            responseData = await this.executeItemGroupItemAssignmentOperation.call(this, operation, i);
+            responseData = await executeItemGroupItemAssignmentOperation.call(this, operation, i);
             break;
           case 'itemOption':
-            responseData = await this.executeItemOptionOperation.call(this, operation, i);
+            responseData = await executeItemOptionOperation.call(this, operation, i);
             break;
           case 'itemOptionValue':
-            responseData = await this.executeItemOptionValueOperation.call(this, operation, i);
+            responseData = await executeItemOptionValueOperation.call(this, operation, i);
             break;
           case 'itemTier':
-            responseData = await this.executeItemTierOperation.call(this, operation, i);
+            responseData = await executeItemTierOperation.call(this, operation, i);
             break;
           case 'lineItem':
-            responseData = await this.executeLineItemOperation.call(this, operation, i);
+            responseData = await executeLineItemOperation.call(this, operation, i);
             break;
           case 'manufacturer':
-            responseData = await this.executeManufacturerOperation.call(this, operation, i);
+            responseData = await executeManufacturerOperation.call(this, operation, i);
             break;
           case 'quote':
-            responseData = await this.executeQuoteOperation.call(this, operation, i);
+            responseData = await executeQuoteOperation.call(this, operation, i);
             break;
           case 'quoteTemplate':
-            responseData = await this.executeQuoteTemplateOperation.call(this, operation, i);
+            responseData = await executeQuoteTemplateOperation.call(this, operation, i);
             break;
           case 'supplier':
-            responseData = await this.executeSupplierOperation.call(this, operation, i);
+            responseData = await executeSupplierOperation.call(this, operation, i);
             break;
           default:
             throw new NodeApiError(this.getNode(), {
@@ -154,9 +154,10 @@ export class Quoter implements INodeType {
         } else {
           returnData.push({ json: responseData });
         }
-      } catch (error) {
+      } catch (error: unknown) {
         if (this.continueOnFail()) {
-          returnData.push({ json: { error: error.message }, pairedItem: { item: i } });
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          returnData.push({ json: { error: errorMessage }, pairedItem: { item: i } });
           continue;
         }
         throw error;
@@ -165,234 +166,236 @@ export class Quoter implements INodeType {
 
     return [returnData];
   }
+}
 
-  private async executeCategoryOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'create':
-        return this.createCategory(itemIndex);
-      case 'get':
-        return this.getCategory(itemIndex);
-      case 'getAll':
-        return this.getAllCategories(itemIndex);
-      case 'update':
-        return this.updateCategory(itemIndex);
-      case 'delete':
-        return this.deleteCategory(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+// Standalone functions for executing operations
+async function executeCategoryOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'create':
+      return createCategory.call(this, itemIndex);
+    case 'get':
+      return getCategory.call(this, itemIndex);
+    case 'getAll':
+      return getAllCategories.call(this, itemIndex);
+    case 'update':
+      return updateCategory.call(this, itemIndex);
+    case 'delete':
+      return deleteCategory.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeContactOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'create':
-        return this.createContact(itemIndex);
-      case 'get':
-        return this.getContact(itemIndex);
-      case 'getAll':
-        return this.getAllContacts(itemIndex);
-      case 'update':
-        return this.updateContact(itemIndex);
-      case 'delete':
-        return this.deleteContact(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeContactOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'create':
+      return createContact.call(this, itemIndex);
+    case 'get':
+      return getContact.call(this, itemIndex);
+    case 'getAll':
+      return getAllContacts.call(this, itemIndex);
+    case 'update':
+      return updateContact.call(this, itemIndex);
+    case 'delete':
+      return deleteContact.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeDataFeedSupplierOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'get':
-        return this.getDataFeedSupplier(itemIndex);
-      case 'getAll':
-        return this.getAllDataFeedSuppliers(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeDataFeedSupplierOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'get':
+      return getDataFeedSupplier.call(this, itemIndex);
+    case 'getAll':
+      return getAllDataFeedSuppliers.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeDataFeedSupplierItemOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'getAll':
-        return this.getAllDataFeedSupplierItems(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeDataFeedSupplierItemOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'getAll':
+      return getAllDataFeedSupplierItems.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeItemOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'create':
-        return this.createItem(itemIndex);
-      case 'get':
-        return this.getItem(itemIndex);
-      case 'getAll':
-        return this.getAllItems(itemIndex);
-      case 'update':
-        return this.updateItem(itemIndex);
-      case 'delete':
-        return this.deleteItem(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeItemOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'create':
+      return createItem.call(this, itemIndex);
+    case 'get':
+      return getItem.call(this, itemIndex);
+    case 'getAll':
+      return getAllItems.call(this, itemIndex);
+    case 'update':
+      return updateItem.call(this, itemIndex);
+    case 'delete':
+      return deleteItem.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeItemGroupOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'create':
-        return this.createItemGroup(itemIndex);
-      case 'get':
-        return this.getItemGroup(itemIndex);
-      case 'getAll':
-        return this.getAllItemGroups(itemIndex);
-      case 'update':
-        return this.updateItemGroup(itemIndex);
-      case 'delete':
-        return this.deleteItemGroup(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeItemGroupOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'create':
+      return createItemGroup.call(this, itemIndex);
+    case 'get':
+      return getItemGroup.call(this, itemIndex);
+    case 'getAll':
+      return getAllItemGroups.call(this, itemIndex);
+    case 'update':
+      return updateItemGroup.call(this, itemIndex);
+    case 'delete':
+      return deleteItemGroup.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeItemGroupItemAssignmentOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'create':
-        return this.createItemGroupItemAssignment(itemIndex);
-      case 'get':
-        return this.getItemGroupItemAssignment(itemIndex);
-      case 'getAll':
-        return this.getAllItemGroupItemAssignments(itemIndex);
-      case 'delete':
-        return this.deleteItemGroupItemAssignment(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeItemGroupItemAssignmentOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'create':
+      return createItemGroupItemAssignment.call(this, itemIndex);
+    case 'get':
+      return getItemGroupItemAssignment.call(this, itemIndex);
+    case 'getAll':
+      return getAllItemGroupItemAssignments.call(this, itemIndex);
+    case 'delete':
+      return deleteItemGroupItemAssignment.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeItemOptionOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'create':
-        return this.createItemOption(itemIndex);
-      case 'get':
-        return this.getItemOption(itemIndex);
-      case 'getAll':
-        return this.getAllItemOptions(itemIndex);
-      case 'update':
-        return this.updateItemOption(itemIndex);
-      case 'delete':
-        return this.deleteItemOption(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeItemOptionOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'create':
+      return createItemOption.call(this, itemIndex);
+    case 'get':
+      return getItemOption.call(this, itemIndex);
+    case 'getAll':
+      return getAllItemOptions.call(this, itemIndex);
+    case 'update':
+      return updateItemOption.call(this, itemIndex);
+    case 'delete':
+      return deleteItemOption.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeItemOptionValueOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'create':
-        return this.createItemOptionValue(itemIndex);
-      case 'get':
-        return this.getItemOptionValue(itemIndex);
-      case 'getAll':
-        return this.getAllItemOptionValues(itemIndex);
-      case 'update':
-        return this.updateItemOptionValue(itemIndex);
-      case 'delete':
-        return this.deleteItemOptionValue(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeItemOptionValueOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'create':
+      return createItemOptionValue.call(this, itemIndex);
+    case 'get':
+      return getItemOptionValue.call(this, itemIndex);
+    case 'getAll':
+      return getAllItemOptionValues.call(this, itemIndex);
+    case 'update':
+      return updateItemOptionValue.call(this, itemIndex);
+    case 'delete':
+      return deleteItemOptionValue.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeItemTierOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'create':
-        return this.createItemTier(itemIndex);
-      case 'get':
-        return this.getItemTier(itemIndex);
-      case 'getAll':
-        return this.getAllItemTiers(itemIndex);
-      case 'update':
-        return this.updateItemTier(itemIndex);
-      case 'delete':
-        return this.deleteItemTier(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeItemTierOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'create':
+      return createItemTier.call(this, itemIndex);
+    case 'get':
+      return getItemTier.call(this, itemIndex);
+    case 'getAll':
+      return getAllItemTiers.call(this, itemIndex);
+    case 'update':
+      return updateItemTier.call(this, itemIndex);
+    case 'delete':
+      return deleteItemTier.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeLineItemOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'create':
-        return this.createLineItem(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeLineItemOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'create':
+      return createLineItem.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeManufacturerOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'create':
-        return this.createManufacturer(itemIndex);
-      case 'get':
-        return this.getManufacturer(itemIndex);
-      case 'getAll':
-        return this.getAllManufacturers(itemIndex);
-      case 'update':
-        return this.updateManufacturer(itemIndex);
-      case 'delete':
-        return this.deleteManufacturer(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeManufacturerOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'create':
+      return createManufacturer.call(this, itemIndex);
+    case 'get':
+      return getManufacturer.call(this, itemIndex);
+    case 'getAll':
+      return getAllManufacturers.call(this, itemIndex);
+    case 'update':
+      return updateManufacturer.call(this, itemIndex);
+    case 'delete':
+      return deleteManufacturer.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeQuoteOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'create':
-        return this.createQuote(itemIndex);
-      case 'get':
-        return this.getQuote(itemIndex);
-      case 'getAll':
-        return this.getAllQuotes(itemIndex);
-      case 'update':
-        return this.updateQuote(itemIndex);
-      case 'delete':
-        return this.deleteQuote(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeQuoteOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'create':
+      return createQuote.call(this, itemIndex);
+    case 'get':
+      return getQuote.call(this, itemIndex);
+    case 'getAll':
+      return getAllQuotes.call(this, itemIndex);
+    case 'update':
+      return updateQuote.call(this, itemIndex);
+    case 'delete':
+      return deleteQuote.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeQuoteTemplateOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'get':
-        return this.getQuoteTemplate(itemIndex);
-      case 'getAll':
-        return this.getAllQuoteTemplates(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeQuoteTemplateOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'get':
+      return getQuoteTemplate.call(this, itemIndex);
+    case 'getAll':
+      return getAllQuoteTemplates.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  private async executeSupplierOperation(operation: string, itemIndex: number): Promise<any> {
-    switch (operation) {
-      case 'create':
-        return this.createSupplier(itemIndex);
-      case 'get':
-        return this.getSupplier(itemIndex);
-      case 'getAll':
-        return this.getAllSuppliers(itemIndex);
-      case 'update':
-        return this.updateSupplier(itemIndex);
-      case 'delete':
-        return this.deleteSupplier(itemIndex);
-      default:
-        throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
-    }
+async function executeSupplierOperation(this: IExecuteFunctions, operation: string, itemIndex: number): Promise<any> {
+  switch (operation) {
+    case 'create':
+      return createSupplier.call(this, itemIndex);
+    case 'get':
+      return getSupplier.call(this, itemIndex);
+    case 'getAll':
+      return getAllSuppliers.call(this, itemIndex);
+    case 'update':
+      return updateSupplier.call(this, itemIndex);
+    case 'delete':
+      return deleteSupplier.call(this, itemIndex);
+    default:
+      throw new NodeApiError(this.getNode(), { message: `Unknown operation: ${operation}` });
   }
+}
 
-  // Category operations
-  private async createCategory(itemIndex: number): Promise<any> {
+// Category operations
+async function createCategory(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const name = this.getNodeParameter('name', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -403,7 +406,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'POST', '/categories', body, query);
   }
 
-  private async getCategory(itemIndex: number): Promise<any> {
+async function getCategory(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const categoryId = this.getNodeParameter('categoryId', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -415,7 +418,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'GET', `/categories/${categoryId}`, undefined, query);
   }
 
-  private async getAllCategories(itemIndex: number): Promise<any> {
+async function getAllCategories(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
     const filters = this.getNodeParameter('filters', itemIndex, {}) as any;
@@ -431,7 +434,7 @@ export class Quoter implements INodeType {
     return response.data || [];
   }
 
-  private async updateCategory(itemIndex: number): Promise<any> {
+async function updateCategory(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const categoryId = this.getNodeParameter('categoryId', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -442,13 +445,13 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'PATCH', `/categories/${categoryId}`, body, query);
   }
 
-  private async deleteCategory(itemIndex: number): Promise<any> {
+async function deleteCategory(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const categoryId = this.getNodeParameter('categoryId', itemIndex) as string;
     return quoterApiRequest.call(this, 'DELETE', `/categories/${categoryId}`);
   }
 
   // Contact operations
-  private async createContact(itemIndex: number): Promise<any> {
+async function createContact(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const firstName = this.getNodeParameter('first_name', itemIndex) as string;
     const lastName = this.getNodeParameter('last_name', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
@@ -460,7 +463,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'POST', '/contacts', body, query);
   }
 
-  private async getContact(itemIndex: number): Promise<any> {
+async function getContact(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const contactId = this.getNodeParameter('contactId', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -472,7 +475,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'GET', `/contacts/${contactId}`, undefined, query);
   }
 
-  private async getAllContacts(itemIndex: number): Promise<any> {
+async function getAllContacts(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
     const filters = this.getNodeParameter('filters', itemIndex, {}) as any;
@@ -488,7 +491,7 @@ export class Quoter implements INodeType {
     return response.data || [];
   }
 
-  private async updateContact(itemIndex: number): Promise<any> {
+async function updateContact(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const contactId = this.getNodeParameter('contactId', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -499,13 +502,13 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'PATCH', `/contacts/${contactId}`, body, query);
   }
 
-  private async deleteContact(itemIndex: number): Promise<any> {
+async function deleteContact(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const contactId = this.getNodeParameter('contactId', itemIndex) as string;
     return quoterApiRequest.call(this, 'DELETE', `/contacts/${contactId}`);
   }
 
   // Data Feed Supplier operations
-  private async getDataFeedSupplier(itemIndex: number): Promise<any> {
+async function getDataFeedSupplier(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const dataFeedSupplierId = this.getNodeParameter('dataFeedSupplierId', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -517,7 +520,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'GET', `/data_feed_suppliers/${dataFeedSupplierId}`, undefined, query);
   }
 
-  private async getAllDataFeedSuppliers(itemIndex: number): Promise<any> {
+async function getAllDataFeedSuppliers(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -533,7 +536,7 @@ export class Quoter implements INodeType {
   }
 
   // Data Feed Supplier Item operations
-  private async getAllDataFeedSupplierItems(itemIndex: number): Promise<any> {
+async function getAllDataFeedSupplierItems(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const mpns = this.getNodeParameter('mpns', itemIndex) as string;
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
@@ -562,7 +565,7 @@ export class Quoter implements INodeType {
   }
 
   // Item operations
-  private async createItem(itemIndex: number): Promise<any> {
+async function createItem(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const name = this.getNodeParameter('name', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -573,7 +576,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'POST', '/items', body, query);
   }
 
-  private async getItem(itemIndex: number): Promise<any> {
+async function getItem(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemId = this.getNodeParameter('itemId', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -585,7 +588,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'GET', `/items/${itemId}`, undefined, query);
   }
 
-  private async getAllItems(itemIndex: number): Promise<any> {
+async function getAllItems(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
     const filters = this.getNodeParameter('filters', itemIndex, {}) as any;
@@ -601,7 +604,7 @@ export class Quoter implements INodeType {
     return response.data || [];
   }
 
-  private async updateItem(itemIndex: number): Promise<any> {
+async function updateItem(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemId = this.getNodeParameter('itemId', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -612,13 +615,13 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'PATCH', `/items/${itemId}`, body, query);
   }
 
-  private async deleteItem(itemIndex: number): Promise<any> {
+async function deleteItem(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemId = this.getNodeParameter('itemId', itemIndex) as string;
     return quoterApiRequest.call(this, 'DELETE', `/items/${itemId}`);
   }
 
   // Item Group operations
-  private async createItemGroup(itemIndex: number): Promise<any> {
+async function createItemGroup(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const name = this.getNodeParameter('name', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -628,7 +631,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'POST', '/item_groups', body, query);
   }
 
-  private async getItemGroup(itemIndex: number): Promise<any> {
+async function getItemGroup(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemGroupId = this.getNodeParameter('itemGroupId', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -640,7 +643,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'GET', `/item_groups/${itemGroupId}`, undefined, query);
   }
 
-  private async getAllItemGroups(itemIndex: number): Promise<any> {
+async function getAllItemGroups(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
     const filters = this.getNodeParameter('filters', itemIndex, {}) as any;
@@ -656,7 +659,7 @@ export class Quoter implements INodeType {
     return response.data || [];
   }
 
-  private async updateItemGroup(itemIndex: number): Promise<any> {
+async function updateItemGroup(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemGroupId = this.getNodeParameter('itemGroupId', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -667,13 +670,13 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'PATCH', `/item_groups/${itemGroupId}`, body, query);
   }
 
-  private async deleteItemGroup(itemIndex: number): Promise<any> {
+async function deleteItemGroup(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemGroupId = this.getNodeParameter('itemGroupId', itemIndex) as string;
     return quoterApiRequest.call(this, 'DELETE', `/item_groups/${itemGroupId}`);
   }
 
   // Item Group Item Assignment operations
-  private async createItemGroupItemAssignment(itemIndex: number): Promise<any> {
+async function createItemGroupItemAssignment(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemId = this.getNodeParameter('item_id', itemIndex) as string;
     const itemGroupId = this.getNodeParameter('item_group_id', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -684,7 +687,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'POST', '/item_group_item_assignments', body, query);
   }
 
-  private async getItemGroupItemAssignment(itemIndex: number): Promise<any> {
+async function getItemGroupItemAssignment(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemGroupItemAssignmentId = this.getNodeParameter('itemGroupItemAssignmentId', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -702,7 +705,7 @@ export class Quoter implements INodeType {
     );
   }
 
-  private async getAllItemGroupItemAssignments(itemIndex: number): Promise<any> {
+async function getAllItemGroupItemAssignments(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
     const filters = this.getNodeParameter('filters', itemIndex, {}) as any;
@@ -718,13 +721,13 @@ export class Quoter implements INodeType {
     return response.data || [];
   }
 
-  private async deleteItemGroupItemAssignment(itemIndex: number): Promise<any> {
+async function deleteItemGroupItemAssignment(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemGroupItemAssignmentId = this.getNodeParameter('itemGroupItemAssignmentId', itemIndex) as string;
     return quoterApiRequest.call(this, 'DELETE', `/item_group_item_assignments/${itemGroupItemAssignmentId}`);
   }
 
   // Item Option operations
-  private async createItemOption(itemIndex: number): Promise<any> {
+async function createItemOption(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemId = this.getNodeParameter('itemId', itemIndex) as string;
     const name = this.getNodeParameter('name', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
@@ -736,7 +739,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'POST', '/item_options', body, query);
   }
 
-  private async getItemOption(itemIndex: number): Promise<any> {
+async function getItemOption(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemOptionId = this.getNodeParameter('itemOptionId', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -748,7 +751,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'GET', `/item_options/${itemOptionId}`, undefined, query);
   }
 
-  private async getAllItemOptions(itemIndex: number): Promise<any> {
+async function getAllItemOptions(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemId = this.getNodeParameter('itemId', itemIndex) as string;
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
@@ -765,7 +768,7 @@ export class Quoter implements INodeType {
     return response.data || [];
   }
 
-  private async updateItemOption(itemIndex: number): Promise<any> {
+async function updateItemOption(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemOptionId = this.getNodeParameter('itemOptionId', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -776,13 +779,13 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'PATCH', `/item_options/${itemOptionId}`, body, query);
   }
 
-  private async deleteItemOption(itemIndex: number): Promise<any> {
+async function deleteItemOption(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemOptionId = this.getNodeParameter('itemOptionId', itemIndex) as string;
     return quoterApiRequest.call(this, 'DELETE', `/item_options/${itemOptionId}`);
   }
 
   // Item Option Value operations
-  private async createItemOptionValue(itemIndex: number): Promise<any> {
+async function createItemOptionValue(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemId = this.getNodeParameter('item_id', itemIndex) as string;
     const itemOptionId = this.getNodeParameter('item_option_id', itemIndex) as string;
     const name = this.getNodeParameter('name', itemIndex) as string;
@@ -795,7 +798,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'POST', '/item_option_values', body, query);
   }
 
-  private async getItemOptionValue(itemIndex: number): Promise<any> {
+async function getItemOptionValue(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemOptionValueId = this.getNodeParameter('itemOptionValueId', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -807,7 +810,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'GET', `/item_option_values/${itemOptionValueId}`, undefined, query);
   }
 
-  private async getAllItemOptionValues(itemIndex: number): Promise<any> {
+async function getAllItemOptionValues(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
     const filters = this.getNodeParameter('filters', itemIndex, {}) as any;
@@ -823,7 +826,7 @@ export class Quoter implements INodeType {
     return response.data || [];
   }
 
-  private async updateItemOptionValue(itemIndex: number): Promise<any> {
+async function updateItemOptionValue(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemOptionValueId = this.getNodeParameter('itemOptionValueId', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -834,13 +837,13 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'PATCH', `/item_option_values/${itemOptionValueId}`, body, query);
   }
 
-  private async deleteItemOptionValue(itemIndex: number): Promise<any> {
+async function deleteItemOptionValue(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemOptionValueId = this.getNodeParameter('itemOptionValueId', itemIndex) as string;
     return quoterApiRequest.call(this, 'DELETE', `/item_option_values/${itemOptionValueId}`);
   }
 
   // Item Tier operations
-  private async createItemTier(itemIndex: number): Promise<any> {
+async function createItemTier(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemId = this.getNodeParameter('item_id', itemIndex) as string;
     const lowerBoundary = this.getNodeParameter('lower_boundary', itemIndex) as number;
     const priceDecimal = this.getNodeParameter('price_decimal', itemIndex) as number;
@@ -858,7 +861,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'POST', '/item_tiers', body, query);
   }
 
-  private async getItemTier(itemIndex: number): Promise<any> {
+async function getItemTier(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemTierId = this.getNodeParameter('itemTierId', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -870,7 +873,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'GET', `/item_tiers/${itemTierId}`, undefined, query);
   }
 
-  private async getAllItemTiers(itemIndex: number): Promise<any> {
+async function getAllItemTiers(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemId = this.getNodeParameter('item_id', itemIndex) as string;
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
@@ -887,7 +890,7 @@ export class Quoter implements INodeType {
     return response.data || [];
   }
 
-  private async updateItemTier(itemIndex: number): Promise<any> {
+async function updateItemTier(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemTierId = this.getNodeParameter('itemTierId', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -898,13 +901,13 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'PATCH', `/item_tiers/${itemTierId}`, body, query);
   }
 
-  private async deleteItemTier(itemIndex: number): Promise<any> {
+async function deleteItemTier(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const itemTierId = this.getNodeParameter('itemTierId', itemIndex) as string;
     return quoterApiRequest.call(this, 'DELETE', `/item_tiers/${itemTierId}`);
   }
 
   // Line Item operations
-  private async createLineItem(itemIndex: number): Promise<any> {
+async function createLineItem(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const quoteId = this.getNodeParameter('quote_id', itemIndex) as string;
     const name = this.getNodeParameter('name', itemIndex) as string;
     const category = this.getNodeParameter('category', itemIndex) as string;
@@ -919,7 +922,7 @@ export class Quoter implements INodeType {
   }
 
   // Manufacturer operations
-  private async createManufacturer(itemIndex: number): Promise<any> {
+async function createManufacturer(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const name = this.getNodeParameter('name', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -929,7 +932,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'POST', '/manufacturers', body, query);
   }
 
-  private async getManufacturer(itemIndex: number): Promise<any> {
+async function getManufacturer(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const manufacturerId = this.getNodeParameter('manufacturerId', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -941,7 +944,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'GET', `/manufacturers/${manufacturerId}`, undefined, query);
   }
 
-  private async getAllManufacturers(itemIndex: number): Promise<any> {
+async function getAllManufacturers(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
     const filters = this.getNodeParameter('filters', itemIndex, {}) as any;
@@ -957,7 +960,7 @@ export class Quoter implements INodeType {
     return response.data || [];
   }
 
-  private async updateManufacturer(itemIndex: number): Promise<any> {
+async function updateManufacturer(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const manufacturerId = this.getNodeParameter('manufacturerId', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -968,13 +971,13 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'PATCH', `/manufacturers/${manufacturerId}`, body, query);
   }
 
-  private async deleteManufacturer(itemIndex: number): Promise<any> {
+async function deleteManufacturer(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const manufacturerId = this.getNodeParameter('manufacturerId', itemIndex) as string;
     return quoterApiRequest.call(this, 'DELETE', `/manufacturers/${manufacturerId}`);
   }
 
   // Quote operations
-  private async createQuote(itemIndex: number): Promise<any> {
+async function createQuote(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const templateId = this.getNodeParameter('template_id', itemIndex) as string;
     const contactId = this.getNodeParameter('contact_id', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
@@ -986,7 +989,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'POST', '/quotes', body, query);
   }
 
-  private async getQuote(itemIndex: number): Promise<any> {
+async function getQuote(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const quoteId = this.getNodeParameter('quoteId', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -998,7 +1001,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'GET', `/quotes/${quoteId}`, undefined, query);
   }
 
-  private async getAllQuotes(itemIndex: number): Promise<any> {
+async function getAllQuotes(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
     const filters = this.getNodeParameter('filters', itemIndex, {}) as any;
@@ -1014,7 +1017,7 @@ export class Quoter implements INodeType {
     return response.data || [];
   }
 
-  private async updateQuote(itemIndex: number): Promise<any> {
+async function updateQuote(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const quoteId = this.getNodeParameter('quoteId', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -1025,13 +1028,13 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'PATCH', `/quotes/${quoteId}`, body, query);
   }
 
-  private async deleteQuote(itemIndex: number): Promise<any> {
+async function deleteQuote(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const quoteId = this.getNodeParameter('quoteId', itemIndex) as string;
     return quoterApiRequest.call(this, 'DELETE', `/quotes/${quoteId}`);
   }
 
   // Quote Template operations
-  private async getQuoteTemplate(itemIndex: number): Promise<any> {
+async function getQuoteTemplate(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const quoteTemplateId = this.getNodeParameter('quoteTemplateId', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -1043,7 +1046,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'GET', `/quote_templates/${quoteTemplateId}`, undefined, query);
   }
 
-  private async getAllQuoteTemplates(itemIndex: number): Promise<any> {
+async function getAllQuoteTemplates(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
     const filters = this.getNodeParameter('filters', itemIndex, {}) as any;
@@ -1060,7 +1063,7 @@ export class Quoter implements INodeType {
   }
 
   // Supplier operations
-  private async createSupplier(itemIndex: number): Promise<any> {
+async function createSupplier(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const name = this.getNodeParameter('name', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -1070,7 +1073,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'POST', '/suppliers', body, query);
   }
 
-  private async getSupplier(itemIndex: number): Promise<any> {
+async function getSupplier(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const supplierId = this.getNodeParameter('supplierId', itemIndex) as string;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
 
@@ -1082,7 +1085,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'GET', `/suppliers/${supplierId}`, undefined, query);
   }
 
-  private async getAllSuppliers(itemIndex: number): Promise<any> {
+async function getAllSuppliers(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const returnAll = this.getNodeParameter('returnAll', itemIndex, false) as boolean;
     const limit = this.getNodeParameter('limit', itemIndex, 50) as number;
     const filters = this.getNodeParameter('filters', itemIndex, {}) as any;
@@ -1098,7 +1101,7 @@ export class Quoter implements INodeType {
     return response.data || [];
   }
 
-  private async updateSupplier(itemIndex: number): Promise<any> {
+async function updateSupplier(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const supplierId = this.getNodeParameter('supplierId', itemIndex) as string;
     const additionalFields = this.getNodeParameter('additionalFields', itemIndex, {}) as any;
     const options = this.getNodeParameter('options', itemIndex, {}) as any;
@@ -1109,8 +1112,7 @@ export class Quoter implements INodeType {
     return quoterApiRequest.call(this, 'PATCH', `/suppliers/${supplierId}`, body, query);
   }
 
-  private async deleteSupplier(itemIndex: number): Promise<any> {
+async function deleteSupplier(this: IExecuteFunctions, itemIndex: number): Promise<any> {
     const supplierId = this.getNodeParameter('supplierId', itemIndex) as string;
     return quoterApiRequest.call(this, 'DELETE', `/suppliers/${supplierId}`);
   }
-}
